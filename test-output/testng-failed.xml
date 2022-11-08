@@ -3,13 +3,15 @@
 <suite name="Failed suite [Default suite]" guice-stage="DEVELOPMENT">
   <test thread-count="5" name="Default test(failed)">
     <classes>
-      <class name="sample.packages.Sample">
+      <class name="realDevice.RealDevice">
         <methods>
-          <include name="first"/>
-          <include name="report"/>
+          <include name="appStore"/>
           <include name="reportexit"/>
+          <include name="base64Screenshot"/>
+          <include name="appLaunch"/>
+          <include name="report"/>
         </methods>
-      </class> <!-- sample.packages.Sample -->
+      </class> <!-- realDevice.RealDevice -->
     </classes>
   </test> <!-- Default test(failed) -->
 </suite> <!-- Failed suite [Default suite] -->

@@ -2,6 +2,7 @@ package sample.packages;
 
 import java.awt.Desktop;
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
 import java.util.Date;
@@ -87,7 +88,7 @@ public class Sample {
 		Desktop.getDesktop().browse(new File(reportlocation2).toURI());
 
 	}
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Throwable {
 		Faker fake = new Faker();
 		String firstname =  fake.name().firstName();
 		String lastName =  fake.name().lastName();
@@ -97,6 +98,27 @@ public class Sample {
 		String phn = fake.phoneNumber().subscriberNumber(5);
 		
 		//System.out.println("Time of execution: " + new Date().get);
+		
+
+		reportlocation = "target/Spark.html";
+		reportlocation2 = "target/failSpark.html";
+
+		extent = new ExtentReports();
+		ExtentSparkReporter spark = new ExtentSparkReporter(reportlocation);
+		ExtentSparkReporter failedspark = new ExtentSparkReporter(reportlocation2).filter().statusFilter()
+				.as(new Status[] { Status.FAIL }).apply();
+		extent.attachReporter(spark);
+
+		spark.config().setTheme(Theme.DARK);
+		spark.config().setDocumentTitle("MyReport");
+		spark.config().setReportName("sample");
+
+		failedspark.config().setTheme(Theme.DARK);
+		failedspark.config().setDocumentTitle("MyReport-Failed");
+		failedspark.config().setReportName("sample fail");
+
+		extent.attachReporter(spark, failedspark);
+
 
 		System.out.println(firstname);
 		System.out.println(lastName);
@@ -106,6 +128,33 @@ public class Sample {
 		System.out.println(phn);
 		System.out.println();
 		
+		ExtentTest logintest = extent.createTest("login test").assignAuthor("Ajith").assignCategory("regression")
+				.assignDevice("iphone 11");
+
+		logintest.pass("login page");
+		logintest.info(MarkupHelper.createLabel("just an info", ExtentColor.GREY));
+//	logintest.fail("login fail");
+		logintest.info("login info");
+		logintest.pass("login screen",
+				MediaEntityBuilder.createScreenCaptureFromBase64String(base64Screenshot()).build());
+		
+		DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
+		desiredCapabilities.setCapability("platformName", "ios");
+		desiredCapabilities.setCapability("appium:platformVersion", "15.6.1");
+		desiredCapabilities.setCapability("appium:deviceName", "Ajith’s iPhone");
+		desiredCapabilities.setCapability("appium:udid", "ff3cf389c16dce03fb1ebbf138f3a4d0bece6ba7");
+		desiredCapabilities.setCapability("appium:automationName", "XCUITest");
+		desiredCapabilities.setCapability("appium:bundleId", "com.apple.AppStore");
+		driver = new IOSDriver<MobileElement>(new URL("http://127.0.0.1:4723/wd/hub"), desiredCapabilities);
+		
+		System.out.println("in report flush");
+		extent.flush();
+		// emailSend();
+		Desktop.getDesktop().browse(new File(reportlocation).toURI());
+		Desktop.getDesktop().browse(new File(reportlocation2).toURI());
+
+
+
 	}
 
 //	public static void emailSend() throws EmailException {
@@ -151,8 +200,8 @@ public class Sample {
 		DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
 		desiredCapabilities.setCapability("platformName", "ios");
 		desiredCapabilities.setCapability("appium:platformVersion", "15.5");
-		desiredCapabilities.setCapability("appium:deviceName", "iPhone 11 Simulator");
-		desiredCapabilities.setCapability("appium:udid", "A53D04D6-9542-4CB2-88FC-45593AD4E3F9");
+		desiredCapabilities.setCapability("appium:deviceName", "Ajith’s iPhone");
+		desiredCapabilities.setCapability("appium:udid", "ff3cf389c16dce03fb1ebbf138f3a4d0bece6ba7");
 		desiredCapabilities.setCapability("appium:automationName", "XCUITest");
 		// desiredCapabilities.setCapability(MobileCapabilityType.APP,
 		// "/Applications/AnswerForce.app");
