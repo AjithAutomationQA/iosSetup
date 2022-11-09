@@ -142,7 +142,7 @@ public class RealDevice {
 
 		ClearButton.clear();
 		
-		appStoreIOS.pass("Clear button clickedß",
+		appStoreIOS.pass("Clear button clicked",
 				MediaEntityBuilder.createScreenCaptureFromBase64String(base64Screenshot()).build());
 
 		appStoreIOS.fail("scroll fail");
